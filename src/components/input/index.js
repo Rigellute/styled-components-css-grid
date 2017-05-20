@@ -4,9 +4,8 @@ import Text from '../text';
 
 const StyledInput = styled.input`
   margin: ${({ margin }) => margin || '0em'};
-  max-width: 100%;
+  width: 100%;
   outline: none;
-  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   text-align: left;
   line-height: 1.21428571em;
   padding: 0.67857143em 1em;
