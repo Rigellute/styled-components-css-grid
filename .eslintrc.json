@@ -1,0 +1,27 @@
+{
+    "extends": ["airbnb", "plugin:flowtype/recommended"],
+    "plugins": [
+        "react",
+        "jsx-a11y",
+        "import",
+        "flowtype"
+    ],
+    "parser": "babel-eslint",
+    "parserOptions": {
+      "ecmaVersion": 6
+    },
+    "env": {
+      "browser": true,
+      "commonjs": true,
+      "node": true,
+      "es6": true
+    },
+    "rules": {
+      "space-after-keywords": "off",
+      "keyword-spacing": [2, {"before": true, "after": true}],
+      "no-console": "off",
+      "strict": ["error", "global"],
+      "curly": "warn",
+      "react/jsx-filename-extension": "off"
+    }
+}
