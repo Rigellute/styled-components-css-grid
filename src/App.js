@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { transparentize, lighten } from 'polished';
 import { colors, styles } from './styles';
 import Input from './components/input';
@@ -24,8 +24,8 @@ function getCols({ numberOfColumns, children }) {
 const GridContainer = styled.div`
   display: grid;
   grid-template-columns: ${getCols};
-  grid-column-gap: 3em;
-  grid-row-gap: 3em;
+  grid-column-gap: ${({ columnGutter }) => columnGutter || '3em'};
+  grid-row-gap: ${({ rowGutter }) => rowGutter || '3em'};
   grid-auto-rows: auto;
   margin: ${({ margin }) => margin || 0};
 `;
@@ -33,8 +33,20 @@ const GridContainer = styled.div`
 const Column = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: ${({ justifyContent }) => justifyContent || 'flex-start'};;
+  justify-content: ${({ justifyContent }) => justifyContent || 'flex-start'};
   align-items: ${({ alignItems }) => alignItems || 'flex-start'};
+`;
+
+const fadeUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
 `;
 
 const Square = styled.div`
@@ -42,6 +54,10 @@ const Square = styled.div`
   height: 100px;
   background-color: ${colors.secondary};
   border-radius: ${styles.borderRadius};
+  animation: ${fadeUp} .7s ease;
+  animation-delay: ${({ delay }) => `${delay}s`};
+  animation-fill-mode: forwards;
+  opacity: 0;
 `;
 
 const Header = styled.h1`
@@ -78,10 +94,10 @@ class App extends Component {
     return (
       <Container>
         <Header>CSS Grid with <code>styled-components</code></Header>
-        <GridContainer numberOfColumns="auto" margin="4em">
+        <GridContainer numberOfColumns="repeat(auto-fit, minmax(100px, 1fr))" margin="4em">
           <Column justifyContent="center">
             <Input
-              label="Column layout or number of columns"
+              label="Column layout"
               placeholder="auto"
               min={1}
               value={this.state.numberOfColumns}
@@ -100,29 +116,61 @@ class App extends Component {
               onChange={({ target: { value } }) => this.setState({ numberOfSquares: value })}
             />
           </Column>
+          <Column justifyContent="center">
+            <Input
+              label="Row gutter"
+              type="text"
+              placeholder="Row gutter (e.g. 3em)"
+              value={this.state.rowGutter}
+              min={1}
+              margin="1em 0"
+              onChange={({ target: { value } }) => this.setState({ rowGutter: value })}
+            />
+          </Column>
+          <Column justifyContent="center">
+            <Input
+              label="Column gutter"
+              type="text"
+              placeholder="Column gutter (e.g. 3em)"
+              value={this.state.columnGutter}
+              min={1}
+              margin="1em 0"
+              onChange={({ target: { value } }) => this.setState({ columnGutter: value })}
+            />
+          </Column>
         </GridContainer>
-        <GridContainer numberOfColumns={this.state.numberOfColumns} margin="4em">
-          {this.numberToArray().map(k => (
+        <GridContainer
+          numberOfColumns={this.state.numberOfColumns}
+          margin="4em"
+          columnGutter={this.state.columnGutter}
+          rowGutter={this.state.rowGutter}
+        >
+          {this.numberToArray().map((k, i) => (
             <Column key={k} justifyContent="center">
-              <Square />
+              <Square delay={i / 10} />
             </Column>
           ))}
         </GridContainer>
         <Header>
           Responsive example
         </Header>
-        <div style={{ textAlign: 'center' }}>
-          <br />
-          <Input
-            label="Specify the min width of each item inside the grid container:"
-            type="number"
-            value={this.state.minSize}
-            onChange={({ target: { value } }) => this.setState({ minSize: value })}
-          />
-        </div>
-        <div style={{ textAlign: 'center', margin: '2em 0' }}>
-          <Code>grid-template-columns: repeat(auto-fit, minmax({this.state.minSize}px, 1fr))</Code>
-        </div>
+        <GridContainer numberOfColumns={1} margin="4em">
+          <Column justifyContent="center">
+            <Input
+              label="Specify the min width of each item inside the grid container"
+              type="number"
+              display="inline"
+              value={this.state.minSize}
+              margin="1em 0"
+              onChange={({ target: { value } }) => this.setState({ minSize: value })}
+            />
+          </Column>
+          <Column justifyContent="center">
+            <Code>
+              grid-template-columns: repeat(auto-fit, minmax({this.state.minSize}px, 1fr));
+            </Code>
+          </Column>
+        </GridContainer>
         <GridContainer numberOfColumns={`repeat(auto-fit, minmax(${this.state.minSize}px, 1fr))`} margin="4em">
           {this.numberToArray().map(k => (
             <Column key={k} justifyContent="center">
