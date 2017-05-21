@@ -4,7 +4,7 @@ import Text from '../text';
 
 const StyledInput = styled.input`
   margin: ${({ margin }) => margin || '0em'};
-  width: 100%;
+  ${''/* width: 100%; */}
   outline: none;
   text-align: left;
   line-height: 1.21428571em;
