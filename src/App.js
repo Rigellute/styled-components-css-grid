@@ -109,7 +109,7 @@ class App extends Component {
           ))}
         </GridContainer>
         <Header>
-          Responsive example:
+          Responsive example
         </Header>
         <div style={{ textAlign: 'center' }}>
           <br />
